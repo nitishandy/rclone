@@ -163,6 +163,14 @@ jobs:
           make vars
           printf "\n\nSystem environment:\n\n"
           env
+          echo "------------- Normal"
+          clang -E  - -v < /dev/null
+          echo "------------- With isysroot"
+          clang -E -isysroot $(xcrun --sdk macosx11.1 --show-sdk-path) - -v < /dev/null
+          echo "--- default path ---"
+          xcrun --show-sdk-path
+          echo "--- 11.11 path ---"
+          xcrun --sdk macosx11.1 --show-sdk-path
 
       - name: Go module cache
         uses: actions/cache@v2
