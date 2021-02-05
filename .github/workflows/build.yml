@@ -133,7 +133,7 @@ jobs:
         shell: bash
         run: |
           brew update
-          brew install --cask osxfuse
+          brew install --cask macfuse
         if: matrix.os == 'macOS-latest'
 
       - name: Install Libraries on Windows
