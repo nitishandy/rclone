@@ -120,7 +120,7 @@ jobs:
           if [[ "${{ matrix.goarch }}" != "" ]]; then echo 'GOARCH=${{ matrix.goarch }}' >> $GITHUB_ENV ; fi
           if [[ "${{ matrix.cgo }}" != "" ]]; then echo 'CGO_ENABLED=${{ matrix.cgo }}' >> $GITHUB_ENV ; fi
           if [[ "${{ matrix.job_name }}" == "mac_arm64" ]]; then echo 'CGO_LDFLAGS=-arch arm64'  >> $GITHUB_ENV ; fi
-          if [[ "${{ matrix.job_name }}" == "mac_arm64" ]]; then echo 'CGO_CFLAGS=-arch arm64'  >> $GITHUB_ENV ; fi
+          #if [[ "${{ matrix.job_name }}" == "mac_arm64" ]]; then echo 'CGO_CFLAGS=-arch arm64'  >> $GITHUB_ENV ; fi
 
       - name: Install Libraries on Linux
         shell: bash
