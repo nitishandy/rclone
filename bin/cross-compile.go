@@ -332,7 +332,7 @@ func compileArch(version, goos, goarch, dir string) bool {
 	}
 	var macCompilerArgs []string
 	if *macOSSDK != "" {
-		macCompilerArgs = append(macCompilerArgs, `-isysroot "`+runOut("xcrun", "--sdk", *macOSSDK, "--show-sdk-path")+`"`)
+		macCompilerArgs = append(macCompilerArgs, "-isysroot "+runOut("xcrun", "--sdk", *macOSSDK, "--show-sdk-path"))
 	}
 	if *macOSArch != "" {
 		macCompilerArgs = append(macCompilerArgs, "-arch "+*macOSArch)
