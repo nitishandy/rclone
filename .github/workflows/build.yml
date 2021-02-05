@@ -45,7 +45,7 @@ jobs:
             os: macOS-latest
             go: '1.16.0-rc1'
             gotags: 'cmount'
-            build_flags: '-include "^darwin/arm64" -cgo -env "CGO_LDFLAGS=-arch arm64 -isysroot $(xcrun --sdk macosx11.1 --show-sdk-path),CGO_LDFLAGS=-arch arm64 -isysroot $(xcrun --sdk macosx11.1 --show-sdk-path)'
+            build_flags: '-include "^darwin/arm64" -cgo -env "CGO_LDFLAGS=-arch arm64 -isysroot $(xcrun --sdk macosx11.1 --show-sdk-path),CGO_LDFLAGS=-arch arm64 -isysroot $(xcrun --sdk macosx11.1 --show-sdk-path)"'
             deploy: true
 
           # - job_name: windows_amd64
