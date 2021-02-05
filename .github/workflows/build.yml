@@ -171,7 +171,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-        if: matrix.os != 'macOS-latest'
 
       - name: Build rclone
         shell: bash
