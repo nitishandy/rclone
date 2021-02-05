@@ -281,6 +281,16 @@ func stripVersion(goarch string) string {
 	return goarch[:i]
 }
 
+// Expand the environment string s by passing it through bash
+func expand(s string) string {
+	out, err := exec.Command("bash", "-c", "echo "+s).Output()
+	if err != nil {
+		log.Printf("Failed to expand %q: %v", s, err)
+		return s
+	}
+	return strings.TrimSpace(string(out))
+}
+
 // build the binary in dir returning success or failure
 func compileArch(version, goos, goarch, dir string) bool {
 	log.Printf("Compiling %s/%s into %s", goos, goarch, dir)
@@ -317,7 +327,11 @@ func compileArch(version, goos, goarch, dir string) bool {
 		"GOARCH=" + stripVersion(goarch),
 	}
 	if *extraEnv != "" {
-		env = append(env, strings.Split(*extraEnv, ",")...)
+		for _, extra := range strings.Split(*extraEnv, ",") {
+			extra = expand(extra)
+			log.Printf("Adding extra env var %q", extra)
+			env = append(env, extra)
+		}
 	}
 	if !*cgo {
 		env = append(env, "CGO_ENABLED=0")
