@@ -38,6 +38,7 @@ var (
 	tags        = flag.String("tags", "", "Space separated list of build tags")
 	buildmode   = flag.String("buildmode", "", "Passed to go build -buildmode flag")
 	compileOnly = flag.Bool("compile-only", false, "Just build the binary, not the zip.")
+	extraEnv    = flag.String("env", "", "comma separated list of VAR=VALUE env vars to set")
 )
 
 // GOOS/GOARCH pairs we build for
@@ -314,6 +315,9 @@ func compileArch(version, goos, goarch, dir string) bool {
 	env := []string{
 		"GOOS=" + goos,
 		"GOARCH=" + stripVersion(goarch),
+	}
+	if *extraEnv != "" {
+		env = append(env, strings.Split(*extraEnv, ",")...)
 	}
 	if !*cgo {
 		env = append(env, "CGO_ENABLED=0")
