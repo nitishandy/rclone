@@ -39,6 +39,8 @@ var (
 	buildmode   = flag.String("buildmode", "", "Passed to go build -buildmode flag")
 	compileOnly = flag.Bool("compile-only", false, "Just build the binary, not the zip.")
 	extraEnv    = flag.String("env", "", "comma separated list of VAR=VALUE env vars to set")
+	macOSSDK    = flag.String("macos-sdk", "", "macOS SDK to use")
+	macOSArch   = flag.String("macos-arch", "", "macOS arch to use")
 )
 
 // GOOS/GOARCH pairs we build for
@@ -281,12 +283,11 @@ func stripVersion(goarch string) string {
 	return goarch[:i]
 }
 
-// Expand the environment string s by passing it through bash
-func expand(s string) string {
-	out, err := exec.Command("bash", "-c", "echo "+s).Output()
+// run the command returning trimmed output
+func runOut(command ...string) string {
+	out, err := exec.Command(command[0], command[1:]...).Output()
 	if err != nil {
-		log.Printf("Failed to expand %q: %v", s, err)
-		return s
+		log.Fatalf("Failed to run %q: %v", command, err)
 	}
 	return strings.TrimSpace(string(out))
 }
@@ -327,11 +328,18 @@ func compileArch(version, goos, goarch, dir string) bool {
 		"GOARCH=" + stripVersion(goarch),
 	}
 	if *extraEnv != "" {
-		for _, extra := range strings.Split(*extraEnv, ",") {
-			extra = expand(extra)
-			log.Printf("Adding extra env var %q", extra)
-			env = append(env, extra)
-		}
+		env = append(env, strings.Split(*extraEnv, ",")...)
+	}
+	var macCompilerArgs []string
+	if *macOSSDK != "" {
+		macCompilerArgs = append(macCompilerArgs, `-isysroot "`+runOut("xcrun", "--sdk", *macOSSDK, "--show-sdk-path")+`"`)
+	}
+	if *macOSArch != "" {
+		macCompilerArgs = append(macCompilerArgs, "-arch "+*macOSArch)
+	}
+	if len(macCompilerArgs) > 0 {
+		v := strings.Join(macCompilerArgs, " ")
+		env = append(env, "CGO_CFLAGS="+v, "CGO_LDFLAGS="+v)
 	}
 	if !*cgo {
 		env = append(env, "CGO_ENABLED=0")
